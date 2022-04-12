@@ -1,6 +1,6 @@
 const { nanoid } = require('nanoid');
 const books = require('./books');
-
+// Tambah Buku
 const addBookHandler = (request, h) => {
   const {
     name,
@@ -17,7 +17,6 @@ const addBookHandler = (request, h) => {
   const finished = pageCount === readPage;
   const insertedAt = new Date().toISOString();
   const updatedAt = insertedAt;
-
   const newBook = {
     id,
     name,
@@ -76,20 +75,7 @@ const addBookHandler = (request, h) => {
 
 const getAllBooksHandler = (request, h) => {
   const { name, reading, finished } = request.query;
-  if (reading === '1') {
-    return h.response({
-      status: 'success',
-      data: {
-        books: books
-          .filter((book) => book.reading === true)
-          .map((book) => ({
-            id: book.id,
-            name: book.name,
-            publisher: book.publisher,
-          })),
-      },
-    });
-  } if (reading === '0') {
+  if (reading === '0') {
     return h.response({
       status: 'success',
       data: {
@@ -102,12 +88,12 @@ const getAllBooksHandler = (request, h) => {
           })),
       },
     });
-  } if (finished === '1') {
+  } if (reading === '1') {
     return h.response({
       status: 'success',
       data: {
         books: books
-          .filter((book) => book.finished === true)
+          .filter((book) => book.reading === true)
           .map((book) => ({
             id: book.id,
             name: book.name,
@@ -121,6 +107,19 @@ const getAllBooksHandler = (request, h) => {
       data: {
         books: books
           .filter((book) => book.finished === false)
+          .map((book) => ({
+            id: book.id,
+            name: book.name,
+            publisher: book.publisher,
+          })),
+      },
+    });
+  } if (finished === '1') {
+    return h.response({
+      status: 'success',
+      data: {
+        books: books
+          .filter((book) => book.finished === true)
           .map((book) => ({
             id: book.id,
             name: book.name,
@@ -180,7 +179,6 @@ const getBookByIdHandler = (request, h) => {
 
 const editBookByIdHandler = (request, h) => {
   const { id } = request.params;
-
   const {
     name,
     year,
